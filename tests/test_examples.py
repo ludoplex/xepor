@@ -29,9 +29,7 @@ def test_scripts_import(script_path):
     not suitable for unit testing.
     """
 
-    fullname = "__mitmproxy_script__.{}".format(
-        os.path.splitext(os.path.basename(script_path))[0]
-    )
+    fullname = f"__mitmproxy_script__.{os.path.splitext(os.path.basename(script_path))[0]}"
     # the fullname is not unique among scripts, so if there already is an existing script with said
     # fullname, remove it.
     sys.modules.pop(fullname, None)
@@ -92,27 +90,7 @@ class TestScripts:
             assert payload["message"] == "Success"
             assert payload["data"]["app"]["krisp"] == "analytics"
 
-    @pytest.mark.parametrize(
-        "url,resp,stdout",
-        [
-            ("http://example.com/test", b"", ""),  # Nonsense url, should return nothing
-            (  # step1
-                f"http://player.polyv.net/videojson/cwqzcxkvj0iukomqxu0l591u2dke4vkc_c.json",
-                b'{"body": "deadbeef"}',
-                "Decrypted videojson for Test Lesson Title",
-            ),
-            (  # step2
-                f"http://hls.videocc.net/jkag324wd2/e/cwqzcxkvj0iukomqxu0l591u2dke4vkc_1.m3u8?pid=544927262345396034173&device=desktop",
-                b"",
-                f"Found playlist for 123456 Test Lesson Title",
-            ),
-            (  # step3
-                f"http://hls.videocc.net/playsafe/jkag324wd2/e/cwqzcxkvj0iukomqxu0l591u2dke4vkc_1.key?pid=544927262345396034173&device=desktop",
-                b"",
-                f"Found key for 123456 Test Lesson Title",
-            ),
-        ],
-    )
+    @pytest.mark.parametrize("url,resp,stdout", [("http://example.com/test", b"", ""), ("http://player.polyv.net/videojson/cwqzcxkvj0iukomqxu0l591u2dke4vkc_c.json", b'{"body": "deadbeef"}', "Decrypted videojson for Test Lesson Title"), ("http://hls.videocc.net/jkag324wd2/e/cwqzcxkvj0iukomqxu0l591u2dke4vkc_1.m3u8?pid=544927262345396034173&device=desktop", b"", "Found playlist for 123456 Test Lesson Title"), ("http://hls.videocc.net/playsafe/jkag324wd2/e/cwqzcxkvj0iukomqxu0l591u2dke4vkc_1.key?pid=544927262345396034173&device=desktop", b"", "Found key for 123456 Test Lesson Title")])
     def test_polyv(self, capsys, monkeypatch, tdata, toptions, url, resp, stdout):
         with taddons.context(options=toptions) as tctx:
             polyv = tctx.script(tdata.path("../examples/polyv_scrapper/polyv.py"))

@@ -250,7 +250,7 @@ latex_documents = [
 # latex_domain_indices = True
 
 # -- External mapping --------------------------------------------------------
-python_version = ".".join(map(str, sys.version_info[0:2]))
+python_version = ".".join(map(str, sys.version_info[:2]))
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "flask": ("https://flask.palletsprojects.com/en/2.0.x/", None),
@@ -261,7 +261,7 @@ intersphinx_mapping = {
 # -- linkcheck event listener ------------------------------------------------
 def strip_github_anchor(app, url):
     if url and (match := re.match(r"(https:\/\/github\.com\/[\w\d._-]+\/[\w\d._-]+\/blob\/.*?)#L\d+(?:-L\d+)?", url)) != None:
-        url = match.group(1)
+        url = match[1]
     return url
 
 def setup(app):
